@@ -1,0 +1,21 @@
+[
+{
+"modid": "fdm",
+"name": "Fire's Derpy Mod",
+"description": "Firedingo's First Mod. Meant entirely for learning stuff.",
+"version": "1.0",
+"mcversion": "1.7.10",
+"url": "",
+"updateUrl": "",
+"authorList": [
+"firedingo"
+],
+"credits": "",
+"logoFile": "",
+"screenshots": [
+],
+"parent":"",
+"dependencies": [
+]
+}
+]
