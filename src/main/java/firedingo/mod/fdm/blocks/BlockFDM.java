@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
  * Created by firedingo on 14/05/2015.
  */
 public abstract class BlockFDM extends Block {
+    //Common Generic Mod Block. Holds all the common info like creative tabs. All Blocks extend from this.
     public BlockFDM(Material material) {
         super(material);
         this.setCreativeTab(CreativeTabs.tabAllSearch);

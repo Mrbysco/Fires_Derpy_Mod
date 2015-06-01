@@ -7,6 +7,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  */
 public class ModItems {
 
+    //Creates An Instance Of The Items Using the Generic Common Type ItemFDM
     public static final ItemFDM ItemLeaf = new ItemLeaf();
     public static final ItemFDM ItemDingot = new ItemDerpyIngot();
     public static final ItemFDM ItemDingot2 = new ItemDerpyIngot2();
@@ -14,6 +15,7 @@ public class ModItems {
     public static final ItemFDM ItemUnchargedCrystal = new ItemUnchargedCrystal();
 
     public static void ItemsInit() {
+        //Registers The Items With FML's GameRegistry
         GameRegistry.registerItem(ItemLeaf, "ItemLeaf");
         GameRegistry.registerItem(ItemDingot, "DerpyIngot");
         GameRegistry.registerItem(ItemDingot2, "DerpyIngot2");

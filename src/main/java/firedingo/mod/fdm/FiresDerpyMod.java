@@ -23,12 +23,14 @@ public class FiresDerpyMod {
 
     @Mod.EventHandler
     public void PreInit(FMLPreInitializationEvent event) {
+        //Calls the method that registers The Mod Items and Blocks
         ModItems.ItemsInit();
         ModBlocks.BlocksInit();
     }
 
     @Mod.EventHandler
     public void Init(FMLInitializationEvent event) {
+        //Calls The Method That Registers The Mod's Recipes
         Recipes.RecipesInit();
     }
 

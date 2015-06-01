@@ -8,7 +8,8 @@ import firedingo.mod.fdm.reference.Reference;
 public class ItemCheese extends ItemFDM {
     public ItemCheese() {
         super();
-        this.setTextureName("fdm:derpyIcheese");
+
         this.setUnlocalizedName(Reference.MOD_ID + ":" + "derpyCheeseItem");
+        this.setTextureName("fdm:derpyIcheese");
     }
 }
