@@ -7,7 +7,9 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import firedingo.mod.fdm.blocks.ModBlocks;
 import firedingo.mod.fdm.items.ModItems;
+import firedingo.mod.fdm.proxy.CommonProxy;
 import firedingo.mod.fdm.proxy.IProxy;
+import firedingo.mod.fdm.proxy.ServerProxy;
 import firedingo.mod.fdm.recipes.Recipes;
 import firedingo.mod.fdm.reference.Reference;
 
@@ -19,7 +21,7 @@ public class FiresDerpyMod {
     public static FiresDerpyMod instance;
 
     @SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.SERVER_PROXY)
-    public static IProxy proxy;
+    public static CommonProxy proxy;
 
     @Mod.EventHandler
     public void PreInit(FMLPreInitializationEvent event) {
@@ -32,6 +34,9 @@ public class FiresDerpyMod {
     public void Init(FMLInitializationEvent event) {
         //Calls The Method That Registers The Mod's Recipes
         Recipes.RecipesInit();
+        //Calls Method For Registering Tile Entities
+        //call tile entity method here
+        proxy.registerTileEntities();
     }
 
     @Mod.EventHandler

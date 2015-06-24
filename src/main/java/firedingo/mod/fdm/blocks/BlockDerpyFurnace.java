@@ -1,16 +1,23 @@
 package firedingo.mod.fdm.blocks;
 
+import firedingo.mod.fdm.creativetab.CreativeTabFDM;
 import firedingo.mod.fdm.reference.Reference;
+import firedingo.mod.fdm.tileentity.TileEntityDerpyFurnace;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.World;
 
 import java.sql.Ref;
 
 /**
  * Created by Firedingo on 24/06/2015.
  */
-public class BlockDerpyFurnace extends BlockFDM {
+public class BlockDerpyFurnace extends BlockContainer implements ITileEntityProvider {
     private IIcon[] icons = new IIcon[6];
     private String name = "derpyfurnace";
     private String side = "";
@@ -18,11 +25,13 @@ public class BlockDerpyFurnace extends BlockFDM {
     public BlockDerpyFurnace() {
         super(Material.rock);
         this.setBlockName(Reference.MOD_ID + ":" + name);
+        this.setCreativeTab(CreativeTabs.tabAllSearch);
+        this.setCreativeTab(CreativeTabFDM.FDM_TAB);
     }
 
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
-        for(int i=0; i < 7; i++) {
+        for(int i=0; i < 6; i++) {
             if (i == 0) {
                 side = "_top";
             }
@@ -49,6 +58,11 @@ public class BlockDerpyFurnace extends BlockFDM {
     @Override
     public IIcon getIcon(int side, int meta) {
         return icons[side];
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World world, int meta) {
+            return new TileEntityDerpyFurnace();
     }
 
 }
