@@ -5,6 +5,7 @@ item.fdm:DerpyIngot.name= Derpy Purple Ingot
 item.fdm:DerpyIngot2.name= Derpy Yellow Ingot
 item.fdm:derpyCheeseItem.name= Derpy Cheese
 item.fdm:ItemUnchargedCrystal.name=UnCharged Power Crystal
+item.fdm:DerpyPick.name= Derpy Pickaxe
 
 #Blocks
 tile.fdm:ColourBlock.name= Derpy Colourful Block
@@ -12,6 +13,7 @@ tile.fdm:DerpyOre.name= Derpy Purple Ore
 tile.fdm:DerpyOre2.name= Derpy Yellow Ore
 tile.fdm:DerpyPane.name= Derpy Purple Pane
 tile.fdm:DerpyCheese.name= Derpy Cheese Block
+tile.fdm:DerpyFurnace.name= Derpy Furnace
 
 #Creative Tabs
 itemGroup.fdm= Fire's Derpy Mod
