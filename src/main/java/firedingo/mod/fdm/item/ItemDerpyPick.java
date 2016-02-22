@@ -1,10 +1,8 @@
-package firedingo.mod.fdm.items;
+package firedingo.mod.fdm.item;
 
 import firedingo.mod.fdm.creativetab.CreativeTabFDM;
 import firedingo.mod.fdm.reference.Reference;
-import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 
 /**

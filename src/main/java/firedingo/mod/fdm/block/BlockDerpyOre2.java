@@ -1,7 +1,5 @@
-package firedingo.mod.fdm.blocks;
+package firedingo.mod.fdm.block;
 
-import firedingo.mod.fdm.items.ItemDerpyIngot2;
-import firedingo.mod.fdm.items.ItemFDM;
 import firedingo.mod.fdm.reference.Reference;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;

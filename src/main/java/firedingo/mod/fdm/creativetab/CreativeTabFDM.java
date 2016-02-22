@@ -1,6 +1,6 @@
 package firedingo.mod.fdm.creativetab;
 
-import firedingo.mod.fdm.items.ModItems;
+import firedingo.mod.fdm.item.ModItems;
 import firedingo.mod.fdm.reference.Reference;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

@@ -5,12 +5,12 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import firedingo.mod.fdm.blocks.ModBlocks;
-import firedingo.mod.fdm.items.ModItems;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import firedingo.mod.fdm.block.ModBlocks;
+import firedingo.mod.fdm.gui.GuiHandler;
+import firedingo.mod.fdm.item.ModItems;
 import firedingo.mod.fdm.proxy.CommonProxy;
-import firedingo.mod.fdm.proxy.IProxy;
-import firedingo.mod.fdm.proxy.ServerProxy;
-import firedingo.mod.fdm.recipes.Recipes;
+import firedingo.mod.fdm.recipe.Recipes;
 import firedingo.mod.fdm.reference.Reference;
 
 
@@ -36,7 +36,10 @@ public class FiresDerpyMod {
         Recipes.RecipesInit();
         //Calls Method For Registering Tile Entities
         //call tile entity method here
-        proxy.registerTileEntities();
+        proxy.initTileEntities();
+
+        //Registers GuiHandler Here
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
     }
 
     @Mod.EventHandler

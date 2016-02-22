@@ -1,10 +1,9 @@
-package firedingo.mod.fdm.blocks;
+package firedingo.mod.fdm.block;
 
 import firedingo.mod.fdm.creativetab.CreativeTabFDM;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 
 /**
  * Created by firedingo on 14/05/2015.

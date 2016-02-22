@@ -1,7 +1,6 @@
-package firedingo.mod.fdm.items;
+package firedingo.mod.fdm.item;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraftforge.common.util.EnumHelper;

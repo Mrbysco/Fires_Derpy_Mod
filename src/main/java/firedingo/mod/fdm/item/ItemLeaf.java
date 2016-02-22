@@ -1,7 +1,6 @@
-package firedingo.mod.fdm.items;
+package firedingo.mod.fdm.item;
 
 import firedingo.mod.fdm.reference.Reference;
-import net.minecraft.creativetab.CreativeTabs;
 
 /**
  * Created by firedingo on 14/05/2015.

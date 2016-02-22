@@ -1,6 +1,6 @@
-package firedingo.mod.fdm.blocks;
+package firedingo.mod.fdm.block;
 
-import firedingo.mod.fdm.items.ModItems;
+import firedingo.mod.fdm.item.ModItems;
 import firedingo.mod.fdm.reference.Reference;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;

@@ -14,6 +14,7 @@ tile.fdm:DerpyOre2.name= Derpy Yellow Ore
 tile.fdm:DerpyPane.name= Derpy Purple Pane
 tile.fdm:DerpyCheeseB.name= Derpy Cheese Block
 tile.fdm:derpyfurnace.name= Derpy Furnace
+tile.fdm:BlockNotchApple.name= Notch Apple Block
 
 #Creative Tabs
 itemGroup.fdm= Fire's Derpy Mod

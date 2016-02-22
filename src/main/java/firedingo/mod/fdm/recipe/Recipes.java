@@ -1,13 +1,10 @@
-package firedingo.mod.fdm.recipes;
+package firedingo.mod.fdm.recipe;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import firedingo.mod.fdm.blocks.ModBlocks;
-import firedingo.mod.fdm.items.ModItems;
+import firedingo.mod.fdm.block.ModBlocks;
+import firedingo.mod.fdm.item.ModItems;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 /**
  * Created by firedingo on 15/05/2015.
@@ -28,5 +25,6 @@ public class Recipes {
         GameRegistry.addRecipe(new ItemStack(ModBlocks.BlockColour), "sss", "sss", "sss", 's', ModItems.ItemLeaf);
         GameRegistry.addShapelessRecipe(new ItemStack(ModItems.ItemUnchargedCrystal),new Object[] {Items.diamond, Items.redstone});
         GameRegistry.addShapedRecipe(new ItemStack(ModItems.ItemDerpyPick), "iii", " s ", " s ", 'i', ModItems.ItemDingot, 's', Items.stick);
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.BlockNotchApple), "aaa", "aaa", "aaa", 'a', Items.golden_apple);
     }
 }

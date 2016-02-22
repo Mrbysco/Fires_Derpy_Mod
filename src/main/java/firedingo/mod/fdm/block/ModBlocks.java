@@ -1,4 +1,4 @@
-package firedingo.mod.fdm.blocks;
+package firedingo.mod.fdm.block;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.BlockPane;
@@ -14,7 +14,8 @@ public class ModBlocks {
     public static final BlockFDM DerpyOre2 = new BlockDerpyOre2();
     public static final BlockPane DerpyPane = new BlockDerpyPane();
     public static final BlockFDM DerpyCheeseB = new BlockDerpyCheese();
-    public static final BlockFDM DerpyFurnace = new BlockDerpyFurnace();
+    public static final BlockDerpyFurnace DerpyFurnace = new BlockDerpyFurnace();
+    public static final BlockNotchApple BlockNotchApple = new BlockNotchApple();
 
     public static void BlocksInit() {
         //Registers The Blocks With FML's GameRegistry
@@ -24,5 +25,6 @@ public class ModBlocks {
        // GameRegistry.registerBlock(DerpyPane, "DerpyPane"); //This needs to be handled. Texture not working but registers fine.
         GameRegistry.registerBlock(DerpyCheeseB, "DerpyCheeseB");
         GameRegistry.registerBlock(DerpyFurnace, "DerpyFurnace");
+        GameRegistry.registerBlock(BlockNotchApple, "BlockNotchApple");
     }
 }

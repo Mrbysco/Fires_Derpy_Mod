@@ -1,13 +1,9 @@
-package firedingo.mod.fdm.blocks;
+package firedingo.mod.fdm.block;
 
-import firedingo.mod.fdm.FiresDerpyMod;
-import firedingo.mod.fdm.items.ItemDerpyIngot;
-import firedingo.mod.fdm.items.ModItems;
+import firedingo.mod.fdm.item.ModItems;
 import firedingo.mod.fdm.reference.Reference;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 import java.util.Random;
 

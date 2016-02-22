@@ -1,4 +1,4 @@
-package firedingo.mod.fdm.items;
+package firedingo.mod.fdm.item;
 
 import firedingo.mod.fdm.creativetab.CreativeTabFDM;
 import net.minecraft.creativetab.CreativeTabs;
