@@ -7,6 +7,7 @@ import firedingo.mod.fdm.ContainerDerpyFurnace;
 import firedingo.mod.fdm.gui.GuiDerpyFurnace;
 import firedingo.mod.fdm.gui.GuiHandler;
 import firedingo.mod.fdm.tileentity.TileEntityDerpyFurnace;
+import firedingo.mod.fdm.world.OreGeneration;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -22,6 +23,10 @@ public abstract class CommonProxy implements IGuiHandler {
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) { return null;} //NOOP
 
     public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {return null; //NOOP
+    }
+
+    public void initWorldGen() {
+        GameRegistry.registerWorldGenerator(new OreGeneration(), 0);
     }
 
 }

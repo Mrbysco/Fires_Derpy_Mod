@@ -37,6 +37,7 @@ public class FiresDerpyMod {
         //Calls Method For Registering Tile Entities
         //call tile entity method here
         proxy.initTileEntities();
+        proxy.initWorldGen();
 
         //Registers GuiHandler Here
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
