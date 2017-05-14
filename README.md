@@ -34,6 +34,12 @@ Included Elements
     - A mod Leaf
 - Containers
     - There should be a container for the Furnace
+- Handlers
+    - There should be a GUI Handler
+    - There Should be an Event Handler
+- Achievements
+    - There should be some achievements
+    - There should be an achievement page holding the custom achievements
 - Other
     - There should be several proxy classes
     - There should be a reference class for holding well references :P

@@ -28,6 +28,10 @@ public class FiresDerpyMod {
         //Calls the method that registers The Mod Items and Blocks
         ModItems.ItemsInit();
         ModBlocks.BlocksInit();
+
+        //registering custom achievements + custom page
+        proxy.registerAchievements();
+        proxy.registerAchievementPage();
     }
 
     @Mod.EventHandler
@@ -41,6 +45,9 @@ public class FiresDerpyMod {
 
         //Registers GuiHandler Here
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+
+        //Register EventHandlers Here
+        proxy.registerEventHandlers();
     }
 
     @Mod.EventHandler
