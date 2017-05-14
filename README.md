@@ -1,5 +1,5 @@
 # Fire's Derpy Mod
-Firedingo's personal Derpy learning to code in Minecarft mod
+Firedingo's personal Derpy learning to code in Minecraft mod
 
 There's a little here. Just the learning about Minecraft modding for Firedingo. Feel Free to have a look through.
 Things may be added sporadically. Mod Was Built For Minecraft 1.7.10 using Forge version 10.13.2.1291
