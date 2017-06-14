@@ -1,20 +1,21 @@
 #English Localizations. Derp these up and things get funky names. Best Just to play along and make things correctly :P
 #Items
-item.fdm:LeafItem.name= Derpy Leaf
-item.fdm:DerpyIngot.name= Derpy Purple Ingot
-item.fdm:DerpyIngot2.name= Derpy Yellow Ingot
-item.fdm:derpyCheeseItem.name= Derpy Cheese
-item.fdm:ItemUnchargedCrystal.name=UnCharged Power Crystal
-item.fdm:DerpyPick.name= Derpy Pickaxe
+item.leaf.name=Derpy Leaf
+item.derpyingot.name=Derpy Purple Ingot
+item.derpyingot2.name=Derpy Yellow Ingot
+item.cheese.name=Derpy Cheese
+item.unchargedcrystal.name=UnCharged Power Crystal
+item.derpypick.name=Derpy Pickaxe
 
 #Blocks
-tile.fdm:ColourBlock.name= Derpy Colourful Block
-tile.fdm:DerpyOre.name= Derpy Purple Ore
-tile.fdm:DerpyOre2.name= Derpy Yellow Ore
-tile.fdm:DerpyPane.name= Derpy Purple Pane
-tile.fdm:DerpyCheeseB.name= Derpy Cheese Block
-tile.fdm:derpyfurnace.name= Derpy Furnace
-tile.fdm:BlockNotchApple.name= Notch Apple Block
+tile.colourblock.name=Derpy Colourful Block
+tile.derpyore.name=Derpy Purple Ore
+tile.derpyore2.name=Derpy Yellow Ore
+tile.derpypane.name=Derpy Purple Pane
+tile.derpycheese.name=Derpy Cheese Block
+tile.derpyfurnace.name=Derpy Furnace
+tile.litderpyfurnace.name=Lit Derpy Furnace
+tile.notchapple.name=Notch Apple Block
 
 #Creative Tabs
 itemGroup.fdm= Fire's Derpy Mod

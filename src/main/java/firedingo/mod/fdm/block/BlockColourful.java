@@ -1,7 +1,7 @@
 package firedingo.mod.fdm.block;
 
 
-import firedingo.mod.fdm.reference.Reference;
+import firedingo.mod.fdm.reference.RegistryReference;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 
@@ -10,9 +10,9 @@ import net.minecraft.item.Item;
  */
 public class BlockColourful extends BlockFDM {
     public BlockColourful() {
-        super(Material.rock);
-        this.setBlockTextureName("fdm:colourblock");
-        this.setBlockName(Reference.MOD_ID + ":" + "ColourBlock");
+        super(Material.ROCK);
+        setUnlocalizedName(RegistryReference.ModBlocks.COLOURBLOCK.getUnlocalisedName());
+        setRegistryName(RegistryReference.ModBlocks.COLOURBLOCK.getRegistryName());
         this.setHarvestLevel("shears", 0);
     }
    // @Override

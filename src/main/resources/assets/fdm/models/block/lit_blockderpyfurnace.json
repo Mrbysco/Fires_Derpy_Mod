@@ -1,0 +1,8 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "top": "fdm:blocks/derpyfurnace_top",
+        "front": "fdm:blocks/derpyfurnace_front_on",
+        "side": "fdm:blocks/derpyfurnace_side"
+    }
+}

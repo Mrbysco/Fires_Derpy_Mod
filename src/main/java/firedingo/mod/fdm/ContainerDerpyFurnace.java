@@ -5,10 +5,15 @@ import firedingo.mod.fdm.tileentity.TileEntityDerpyFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
+import net.minecraft.inventory.SlotFurnaceFuel;
+import net.minecraft.inventory.SlotFurnaceOutput;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by Firedingo on 6/08/2015.
@@ -16,86 +21,164 @@ import net.minecraft.item.ItemStack;
 //Add Slot not happening
 //Pahimar puts this under the inventory package
 public class ContainerDerpyFurnace extends Container {
+    private final IInventory tileDerpyFurnace;
+    private int cookTime;
+    private int totalCookTime;
+    private int furnaceBurnTime;
+    private int currentItemBurnTime;
 
     private TileEntityDerpyFurnace TEDerpyFurnace;
 
-    public ContainerDerpyFurnace(InventoryPlayer playerInv, TileEntityDerpyFurnace TEDerpyFurnace) {
-        this.TEDerpyFurnace = TEDerpyFurnace;
+    public ContainerDerpyFurnace(InventoryPlayer playerInventory, IInventory furnaceInventory) {
+    	this.tileDerpyFurnace = furnaceInventory;
+        this.addSlotToContainer(new Slot(furnaceInventory, 0, 56, 17));
+        this.addSlotToContainer(new SlotFurnaceFuel(furnaceInventory, 1, 56, 53));
+        this.addSlotToContainer(new SlotFurnaceOutput(playerInventory.player, furnaceInventory, 2, 116, 35));
 
-        //Add Furnace Slots
-        this.addSlotToContainer(new Slot(TEDerpyFurnace, 0, 56, 17));
-        this.addSlotToContainer(new Slot(TEDerpyFurnace, 1, 56, 53));
-        this.addSlotToContainer(new Slot(TEDerpyFurnace, 2, 116, 35));
-
-        int x;
-        int y;
-
-        //the Slot constructor takes the IInventory and the slot number in that it binds to
-        //and the x-y coordinates it resides on-screen
-        for (y = 0; y < 3; y++) {
-            for (x = 0; x < 9; x++) {
-                addSlotToContainer(new Slot(playerInv, x + y * 9 + 9, 8 + x * 18, 84 + y * 18));
+        for (int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 9; ++j)
+            {
+                this.addSlotToContainer(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
             }
         }
 
-        for (x = 0; x < 9; x++) {
-            addSlotToContainer(new Slot(playerInv, x, 8 + x * 18, 142));
+        for (int k = 0; k < 9; ++k)
+        {
+            this.addSlotToContainer(new Slot(playerInventory, k, 8 + k * 18, 142));
         }
-
-        //bind player's inventory
-      //  bindPlayerInventory(playerInv);
     }
 
-    @Override
-    public boolean canInteractWith(EntityPlayer playerInv) {
-      //  return this.TEDerpyFurnace.isUseableByPlayer(playerInv);
-        return true;
+    public void addListener(IContainerListener listener)
+    {
+        super.addListener(listener);
+        listener.sendAllWindowProperties(this, this.tileDerpyFurnace);
     }
 
-    public void bindPlayerInventory(InventoryPlayer PlayerInv) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                System.out.println("BindPLayerInventory First thing");
-                this.addSlotToContainer(new Slot(PlayerInv, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+    /**
+     * Looks for changes made in the container, sends them to every listener.
+     */
+    public void detectAndSendChanges()
+    {
+        super.detectAndSendChanges();
+
+        for (int i = 0; i < this.listeners.size(); ++i)
+        {
+            IContainerListener icontainerlistener = (IContainerListener)this.listeners.get(i);
+
+            if (this.cookTime != this.tileDerpyFurnace.getField(2))
+            {
+                icontainerlistener.sendProgressBarUpdate(this, 2, this.tileDerpyFurnace.getField(2));
+            }
+
+            if (this.furnaceBurnTime != this.tileDerpyFurnace.getField(0))
+            {
+                icontainerlistener.sendProgressBarUpdate(this, 0, this.tileDerpyFurnace.getField(0));
+            }
+
+            if (this.currentItemBurnTime != this.tileDerpyFurnace.getField(1))
+            {
+                icontainerlistener.sendProgressBarUpdate(this, 1, this.tileDerpyFurnace.getField(1));
+            }
+
+            if (this.totalCookTime != this.tileDerpyFurnace.getField(3))
+            {
+                icontainerlistener.sendProgressBarUpdate(this, 3, this.tileDerpyFurnace.getField(3));
             }
         }
-        for (int i = 0; i < 9; i++) {
-            System.out.println("BindPLayerInventory Second thing");
-            this.addSlotToContainer(new Slot(PlayerInv, i, 8 + i * 18, 142));
-        }
+
+        this.cookTime = this.tileDerpyFurnace.getField(2);
+        this.furnaceBurnTime = this.tileDerpyFurnace.getField(0);
+        this.currentItemBurnTime = this.tileDerpyFurnace.getField(1);
+        this.totalCookTime = this.tileDerpyFurnace.getField(3);
     }
 
-//This code is likely causing shift clicking errors and crashes
-    @Override
-    public ItemStack transferStackInSlot (EntityPlayer player, int slot) {
-        ItemStack stack = null;
-        Slot Slot = (Slot) inventorySlots.get(slot);
+    @SideOnly(Side.CLIENT)
+    public void updateProgressBar(int id, int data)
+    {
+        this.tileDerpyFurnace.setField(id, data);
+    }
 
-        //null checks and checks if the item can be stacked (maxStackSize > 1)
-        if (Slot != null && Slot.getHasStack()) {
-            ItemStack StackInSlot = Slot.getStack();
-            stack = StackInSlot.copy();
+    /**
+     * Determines whether supplied player can use this container
+     */
+    public boolean canInteractWith(EntityPlayer playerIn)
+    {
+        return this.tileDerpyFurnace.isUsableByPlayer(playerIn);
+    }
 
-            //merges the item into player inventory since its in the tileEntity
-            if (slot < TEDerpyFurnace.getSizeInventory()) {
-                if (!this.mergeItemStack(StackInSlot, TEDerpyFurnace.getSizeInventory(), 36 + TEDerpyFurnace.getSizeInventory(), true)) {
-                    return null;
+    /**
+     * Take a stack from the specified inventory slot.
+     */
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
+    {
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slot = (Slot)this.inventorySlots.get(index);
+
+        if (slot != null && slot.getHasStack())
+        {
+            ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
+
+            if (index == 2)
+            {
+                if (!this.mergeItemStack(itemstack1, 3, 39, true))
+                {
+                    return ItemStack.EMPTY;
+                }
+
+                slot.onSlotChange(itemstack1, itemstack);
+            }
+            else if (index != 1 && index != 0)
+            {
+                if (!FurnaceRecipes.instance().getSmeltingResult(itemstack1).isEmpty())
+                {
+                    if (!this.mergeItemStack(itemstack1, 0, 1, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if (TileEntityDerpyFurnace.isItemFuel(itemstack1))
+                {
+                    if (!this.mergeItemStack(itemstack1, 1, 2, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if (index >= 3 && index < 30)
+                {
+                    if (!this.mergeItemStack(itemstack1, 30, 39, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if (index >= 30 && index < 39 && !this.mergeItemStack(itemstack1, 3, 30, false))
+                {
+                    return ItemStack.EMPTY;
                 }
             }
-            else if (!this.mergeItemStack(StackInSlot, 0, TEDerpyFurnace.getSizeInventory(), false)) {
-                return null;
+            else if (!this.mergeItemStack(itemstack1, 3, 39, false))
+            {
+                return ItemStack.EMPTY;
             }
-            if (StackInSlot.stackSize == 0) {
-                Slot.putStack(null);
+
+            if (itemstack1.isEmpty())
+            {
+                slot.putStack(ItemStack.EMPTY);
             }
-            else {
-                Slot.onSlotChanged();
+            else
+            {
+                slot.onSlotChanged();
             }
-            if (StackInSlot.stackSize == stack.stackSize) {
-                return null;
+
+            if (itemstack1.getCount() == itemstack.getCount())
+            {
+                return ItemStack.EMPTY;
             }
-            Slot.onPickupFromSlot(player, StackInSlot);
+
+            slot.onTake(playerIn, itemstack1);
         }
-        return stack;
+
+        return itemstack;
     }
 }

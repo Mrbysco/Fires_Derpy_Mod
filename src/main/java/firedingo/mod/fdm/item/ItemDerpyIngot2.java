@@ -1,6 +1,7 @@
 package firedingo.mod.fdm.item;
 
 import firedingo.mod.fdm.reference.Reference;
+import firedingo.mod.fdm.reference.RegistryReference;
 
 /**
  * Created by firedingo on 15/05/2015.
@@ -8,7 +9,8 @@ import firedingo.mod.fdm.reference.Reference;
 public class ItemDerpyIngot2 extends ItemFDM {
     public ItemDerpyIngot2() {
         super();
-        this.setUnlocalizedName(Reference.MOD_ID + ":" + "DerpyIngot2");
-        this.setTextureName("fdm:derpyingot2");
+        setUnlocalizedName(RegistryReference.ModItems.DERPYINGOT2.getUnlocalisedName());
+        setRegistryName(RegistryReference.ModItems.DERPYINGOT2.getRegistryName());
+        this.setMaxStackSize(64);
     }
 }

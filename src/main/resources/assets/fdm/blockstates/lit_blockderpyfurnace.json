@@ -1,0 +1,8 @@
+{
+    "variants": {
+		"facing=north": { "model": "fdm:lit_blockderpyfurnace", "y": 180},
+		"facing=south": { "model": "fdm:lit_blockderpyfurnace"},
+		"facing=east":  { "model": "fdm:lit_blockderpyfurnace", "y": 270},
+		"facing=west":  { "model": "fdm:lit_blockderpyfurnace", "y": 90}
+    }
+}

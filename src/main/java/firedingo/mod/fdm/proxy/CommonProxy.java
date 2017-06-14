@@ -1,21 +1,17 @@
 package firedingo.mod.fdm.proxy;
 
 
-import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
-import firedingo.mod.fdm.ContainerDerpyFurnace;
-import firedingo.mod.fdm.gui.GuiDerpyFurnace;
-import firedingo.mod.fdm.gui.GuiHandler;
 import firedingo.mod.fdm.handler.EventHandler;
 import firedingo.mod.fdm.stats.Achievements;
 import firedingo.mod.fdm.tileentity.TileEntityDerpyFurnace;
 import firedingo.mod.fdm.world.OreGeneration;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.stats.Achievement;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public abstract class CommonProxy implements IGuiHandler {
     //seems things are funky if you don't atleast create these classes. That's why they're here but empty.
@@ -56,4 +52,8 @@ public abstract class CommonProxy implements IGuiHandler {
         //Register the Event Handlers Here
         MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
+
+	public void registerRenders() {
+		
+	}
 }

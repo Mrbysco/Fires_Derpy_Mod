@@ -3,7 +3,7 @@ package firedingo.mod.fdm.creativetab;
 import firedingo.mod.fdm.item.ModItems;
 import firedingo.mod.fdm.reference.Reference;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 /**
  * Created by firedingo on 15/05/2015.
@@ -14,9 +14,9 @@ public class CreativeTabFDM {
 
     {
         @Override
-        public Item getTabIconItem() {
+        public ItemStack getTabIconItem() {
         //Sets The Tab's Icon
-            return ModItems.ItemLeaf;
+            return new ItemStack(ModItems.ItemLeaf);
         }
     };
 }

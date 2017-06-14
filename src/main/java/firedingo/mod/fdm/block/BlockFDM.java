@@ -12,7 +12,7 @@ public abstract class BlockFDM extends Block {
     //Common Generic Mod Block. Holds all the common info like creative tabs. All Blocks extend from this.
     public BlockFDM(Material material) {
         super(material);
-        this.setCreativeTab(CreativeTabs.tabAllSearch);
+        this.setCreativeTab(CreativeTabs.SEARCH);
         this.setCreativeTab(CreativeTabFDM.FDM_TAB);
     }
 

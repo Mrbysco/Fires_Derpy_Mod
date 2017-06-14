@@ -12,7 +12,7 @@ public class ItemFDM extends Item {
     public ItemFDM()
     {
         super();
-        this.setCreativeTab(CreativeTabs.tabAllSearch);
+        this.setCreativeTab(CreativeTabs.SEARCH);
         this.setCreativeTab(CreativeTabFDM.FDM_TAB);
     }
 }

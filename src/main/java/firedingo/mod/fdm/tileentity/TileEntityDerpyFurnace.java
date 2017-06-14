@@ -1,312 +1,550 @@
 package firedingo.mod.fdm.tileentity;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import firedingo.mod.fdm.block.BlockDerpyFurnace;
+import firedingo.mod.fdm.block.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerFurnace;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.*;
-
+import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.inventory.SlotFurnaceFuel;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
-import java.lang.String;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.datafix.DataFixer;
+import net.minecraft.util.datafix.FixTypes;
+import net.minecraft.util.datafix.walkers.ItemStackDataLists;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by Firedingo on 24/06/2015.
  */
-public class TileEntityDerpyFurnace extends TileEntity implements ISidedInventory {
+public class TileEntityDerpyFurnace extends TileEntity implements ITickable, ISidedInventory{
 
-    public int FuelBurnTime;
-    public int FurnaceBurnProcess;
-    private ItemStack[] FurnaceContentStack = new ItemStack[3];
-    public int CookProcessTime;
+	private static final int[] SLOTS_TOP = new int[] {0};
+    private static final int[] SLOTS_BOTTOM = new int[] {2, 1};
+    private static final int[] SLOTS_SIDES = new int[] {1};
+    /** The ItemStacks that hold the items currently being used in the furnace */
+    private NonNullList<ItemStack> derpyfurnaceItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
+    /** The number of ticks that the furnace will keep burning */
+    private int derpyfurnaceBurnTime;
+    /** The number of ticks that a fresh copy of the currently-burning item would keep the furnace burning for */
+    private int currentItemBurnTime;
+    private int cookTime;
+    private int totalCookTime;
+    private String furnaceCustomName;
 
 
     private String name = "tileEntityDerpyFurnace";
-    private ItemStack[] inventory;
-
     public static final String publicname = "tileEntityDerpyFurnace";
 
-    public TileEntityDerpyFurnace() {
-        this.inventory = new ItemStack[3]; // this plus getter throws error
+
+    /**
+     * Returns the number of slots in the inventory.
+     */
+    public int getSizeInventory()
+    {
+        return this.derpyfurnaceItemStacks.size();
     }
 
-    public String getName() {
-        return name;
-    }
-
-
-    @Override
-    public int getSizeInventory() {
-        if (inventory == null) { //was crashing cause null value. Not crashing any more but if statement helped figure out there was a null value.
-            System.out.println("Inventory Is Null");
-            return 3;
-        }
-        else {
-            System.out.println("Inventory Is NOT Null");
-            return inventory.length;
-        }
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int slot) {
-        return inventory[slot];
-        }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int amt) {
-        ItemStack stack = getStackInSlot(slot);
-        if (stack != null) {
-            if (stack.stackSize <= amt) {
-                setInventorySlotContents(slot, null);
-            }
-            else {
-                stack = stack.splitStack(amt);
-                if (stack.stackSize == 0) {
-                    setInventorySlotContents(slot, null);
-                }
+    public boolean isEmpty()
+    {
+        for (ItemStack itemstack : this.derpyfurnaceItemStacks)
+        {
+            if (!itemstack.isEmpty())
+            {
+                return false;
             }
         }
-        return stack;
+
+        return true;
     }
 
-    @Override
-    public ItemStack getStackInSlotOnClosing(int slot) {
-        ItemStack stack = getStackInSlot(slot);
-        if (stack != null) {
-            setInventorySlotContents(slot, null);
+    /**
+     * Returns the stack in the given slot.
+     */
+    public ItemStack getStackInSlot(int index)
+    {
+        return (ItemStack)this.derpyfurnaceItemStacks.get(index);
+    }
+
+    /**
+     * Removes up to a specified number of items from an inventory slot and returns them in a new stack.
+     */
+    public ItemStack decrStackSize(int index, int count)
+    {
+        return ItemStackHelper.getAndSplit(this.derpyfurnaceItemStacks, index, count);
+    }
+
+    /**
+     * Removes a stack from the given slot and returns it.
+     */
+    public ItemStack removeStackFromSlot(int index)
+    {
+        return ItemStackHelper.getAndRemove(this.derpyfurnaceItemStacks, index);
+    }
+
+    /**
+     * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
+     */
+    public void setInventorySlotContents(int index, ItemStack stack)
+    {
+        ItemStack itemstack = (ItemStack)this.derpyfurnaceItemStacks.get(index);
+        boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
+        this.derpyfurnaceItemStacks.set(index, stack);
+
+        if (stack.getCount() > this.getInventoryStackLimit())
+        {
+            stack.setCount(this.getInventoryStackLimit());
         }
-        return stack;
-    }
 
-    @Override
-    public void setInventorySlotContents(int slot, ItemStack stack) {
-        inventory[slot] = stack;
-        if (stack != null && stack.stackSize > getInventoryStackLimit()) {
-            stack.stackSize = getInventoryStackLimit();
+        if (index == 0 && !flag)
+        {
+            this.totalCookTime = this.getCookTime(stack);
+            this.cookTime = 0;
+            this.markDirty();
         }
     }
 
-    @Override
-    public String getInventoryName() {
-        return "fdm.tileentityderpyfurnace";
+    /**
+     * Get the name of this object. For players this returns their username
+     */
+    public String getName()
+    {
+        return this.hasCustomName() ? this.furnaceCustomName : "container.derpyfurnace";
     }
 
-    @Override
-    public boolean hasCustomInventoryName() {
-        return false; //THIS IS NEW! NEED MORE READING ON IT!
+    /**
+     * Returns true if this thing is named
+     */
+    public boolean hasCustomName()
+    {
+        return this.furnaceCustomName != null && !this.furnaceCustomName.isEmpty();
     }
 
-    @Override
-    public int getInventoryStackLimit() {
+    public void setCustomInventoryName(String p_145951_1_)
+    {
+        this.furnaceCustomName = p_145951_1_;
+    }
+
+    public static void registerFixesFurnace(DataFixer fixer)
+    {
+        fixer.registerWalker(FixTypes.BLOCK_ENTITY, new ItemStackDataLists(TileEntityDerpyFurnace.class, new String[] {"Items"}));
+    }
+
+    public void readFromNBT(NBTTagCompound compound)
+    {
+        super.readFromNBT(compound);
+        this.derpyfurnaceItemStacks = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
+        ItemStackHelper.loadAllItems(compound, this.derpyfurnaceItemStacks);
+        this.derpyfurnaceBurnTime = compound.getInteger("BurnTime");
+        this.cookTime = compound.getInteger("CookTime");
+        this.totalCookTime = compound.getInteger("CookTimeTotal");
+        this.currentItemBurnTime = getItemBurnTime((ItemStack)this.derpyfurnaceItemStacks.get(1));
+
+        if (compound.hasKey("CustomName", 8))
+        {
+            this.furnaceCustomName = compound.getString("CustomName");
+        }
+    }
+
+    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    {
+        super.writeToNBT(compound);
+        compound.setInteger("BurnTime", (short)this.derpyfurnaceBurnTime);
+        compound.setInteger("CookTime", (short)this.cookTime);
+        compound.setInteger("CookTimeTotal", (short)this.totalCookTime);
+        ItemStackHelper.saveAllItems(compound, this.derpyfurnaceItemStacks);
+
+        if (this.hasCustomName())
+        {
+            compound.setString("CustomName", this.furnaceCustomName);
+        }
+
+        return compound;
+    }
+
+    /**
+     * Returns the maximum stack size for a inventory slot. Seems to always be 64, possibly will be extended.
+     */
+    public int getInventoryStackLimit()
+    {
         return 64;
     }
 
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
-        return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this &&
-                player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
+    /**
+     * Furnace isBurning
+     */
+    public boolean isBurning()
+    {
+        return this.derpyfurnaceBurnTime > 0;
     }
 
-    @Override
-    public void openInventory() {
-        //NOOP
+    @SideOnly(Side.CLIENT)
+    public static boolean isBurning(IInventory inventory)
+    {
+        return inventory.getField(0) > 0;
     }
 
-    @Override
-    public void closeInventory() {
-        //NOOP
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        switch(slot) {
-            case 0: //Fuel
-                return TileEntityFurnace.isItemFuel(stack);
-            case 1: //Input
-                return true;
-            case 2: //Output
-                return false;
-        }
-        return true;
-    } //THIS IS NEW! NEED MORE READING ON IT!
-
-    //NEED TO LEARN MORE ABOUT THE FOLLOWING NBT METHODS
-    @Override
-    public void readFromNBT(NBTTagCompound NBTtagC) {
-        super.readFromNBT(NBTtagC);
-
-        NBTTagList tagList = NBTtagC.getTagList("Inventory",0);
-        for (int i = 0; i < tagList.tagCount(); i++) {
-            NBTTagCompound nbtTag = (NBTTagCompound) tagList.getCompoundTagAt(i);
-            byte slot = nbtTag.getByte("Slot");
-            if (slot >= 0 && slot < inventory.length) {
-                inventory[slot] = ItemStack.loadItemStackFromNBT(nbtTag);
-            }
-            FurnaceBurnProcess = NBTtagC.getInteger("Process");
-            FuelBurnTime = NBTtagC.getInteger("MaxTime");
-        }
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound NBTtagC) {
-        super.writeToNBT(NBTtagC);
-
-        NBTTagList itemList = new NBTTagList();
-        for (int i = 0; i < inventory.length; i++) {
-            ItemStack stack = inventory[i];
-            if (stack != null) {
-                NBTTagCompound NBTtag = new NBTTagCompound();
-                NBTtag.setByte("slot", (byte) i);
-                stack.writeToNBT(NBTtag);
-                itemList.appendTag(NBTtag);
-            }
-        }
-        NBTtagC.setTag("inventory", itemList);
-
-        NBTtagC.setInteger("Process", FurnaceBurnProcess);
-        NBTtagC.setInteger("MaxTime", FuelBurnTime);
-    }
-
-   // /*
-    @Override
-    public int[] getAccessibleSlotsFromSide(int sideInt) { //Required by ISidedInventory
-        return new int[0];
-        //or null
-    }
-
-    @Override
-    public boolean canInsertItem(int slot, ItemStack stack, int side) { //Required by ISidedInventory
-        return isItemValidForSlot(slot, stack);
-    }
-
-    @Override
-    public boolean canExtractItem(int slot, ItemStack stack, int side) { //Required by ISidedInventory
-        return true;
-    }
-    //*/
-
-    public int getBurnTimeRemainingScaled(int something) {
-        if (FuelBurnTime == 0) {
-            this.FuelBurnTime = 200;
-        }
-        return this.FurnaceBurnProcess * something / this.FuelBurnTime;
-    }
-
-    public boolean isBurning() {
-        return this.FurnaceBurnProcess > 0;
-    }
-
-    public void updateEntity() {
-        boolean flag = FurnaceBurnProcess > 0;
+    /**
+     * Like the old updateEntity(), except more generic.
+     */
+    public void update()
+    {
+        boolean flag = this.isBurning();
         boolean flag1 = false;
 
-        if (this.FurnaceBurnProcess > 0) {
-            --this.FurnaceBurnProcess;
+        if (this.isBurning())
+        {
+            --this.derpyfurnaceBurnTime;
         }
 
-        if (!this.worldObj.isRemote) {
-            if (this.FurnaceBurnProcess != 0 || this.FurnaceContentStack[1] != null && this.FurnaceContentStack[0] != null) {
-                if (this.FurnaceBurnProcess == 0 && this.canSmelt()) {
-                    this.FuelBurnTime = this.FurnaceBurnProcess = getItemBurnTime(this.FurnaceContentStack[1]);
-                    if (this.FurnaceBurnProcess > 0) {
+        if (!this.world.isRemote)
+        {
+            ItemStack itemstack = (ItemStack)this.derpyfurnaceItemStacks.get(1);
+
+            if (this.isBurning() || !itemstack.isEmpty() && !((ItemStack)this.derpyfurnaceItemStacks.get(0)).isEmpty())
+            {
+                if (!this.isBurning() && this.canSmelt())
+                {
+                    this.derpyfurnaceBurnTime = getItemBurnTime(itemstack);
+                    this.currentItemBurnTime = this.derpyfurnaceBurnTime;
+
+                    if (this.isBurning())
+                    {
                         flag1 = true;
 
-                        if(this.FurnaceContentStack[1] != null) {
-                            --this.FurnaceContentStack[1].stackSize;
+                        if (!itemstack.isEmpty())
+                        {
+                            Item item = itemstack.getItem();
+                            itemstack.shrink(1);
 
-                            if (this.FurnaceContentStack[1].stackSize == 0) {
-                                this.FurnaceContentStack[1] = FurnaceContentStack[1].getItem().getContainerItem(FurnaceContentStack[1]);
+                            if (itemstack.isEmpty())
+                            {
+                                ItemStack item1 = item.getContainerItem(itemstack);
+                                this.derpyfurnaceItemStacks.set(1, item1);
                             }
                         }
                     }
                 }
-                if (this.isBurning() && this.canSmelt()) {
-                    ++this.CookProcessTime;
 
-                    if(this.CookProcessTime == 200) {
-                        this.CookProcessTime = 0;
+                if (this.isBurning() && this.canSmelt())
+                {
+                    ++this.cookTime;
+
+                    if (this.cookTime == this.totalCookTime)
+                    {
+                        this.cookTime = 0;
+                        this.totalCookTime = this.getCookTime((ItemStack)this.derpyfurnaceItemStacks.get(0));
                         this.smeltItem();
                         flag1 = true;
                     }
                 }
-                else {
-                    this.CookProcessTime = 0;
+                else
+                {
+                    this.cookTime = 0;
                 }
             }
+            else if (!this.isBurning() && this.cookTime > 0)
+            {
+                this.cookTime = MathHelper.clamp(this.cookTime - 2, 0, this.totalCookTime);
+            }
 
-            if (flag != this.FurnaceBurnProcess > 0) {
+            if (flag != this.isBurning())
+            {
                 flag1 = true;
-                BlockDerpyFurnace.updateFurnaceBlockState(this.FurnaceBurnProcess > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+                ModBlocks.DerpyFurnace.setState(this.isBurning(), this.world, this.pos);
             }
         }
-        if (flag1) {
+
+        if (flag1)
+        {
             this.markDirty();
         }
     }
-    private boolean canSmelt() {
-        if (this.FurnaceContentStack[0] == null) {
+
+    public int getCookTime(ItemStack stack)
+    {
+        return 200;
+    }
+
+    /**
+     * Returns true if the furnace can smelt an item, i.e. has a source item, destination stack isn't full, etc.
+     */
+    private boolean canSmelt()
+    {
+        if (((ItemStack)this.derpyfurnaceItemStacks.get(0)).isEmpty())
+        {
             return false;
         }
-        else {
-            ItemStack stack = FurnaceRecipes.smelting().getSmeltingResult(this.FurnaceContentStack[0]);
-            if (stack == null) { return false; }
-            if (FurnaceContentStack[2] == null) { return true; }
-            if (!FurnaceContentStack[2].isItemEqual(stack)) { return false; }
-            int result = FurnaceContentStack[2].stackSize + stack.stackSize;
-            return result <= getInventoryStackLimit() && result <= this.FurnaceContentStack[2].getMaxStackSize();
-        }
-    }
-    public void smeltItem() {
-        if (this.canSmelt()) {
-            ItemStack stack = FurnaceRecipes.smelting().getSmeltingResult(this.FurnaceContentStack[0]);
-            if (this.FurnaceContentStack[2] == null) {
-                this.FurnaceContentStack[2] = stack.copy();
+        else
+        {
+            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult((ItemStack)this.derpyfurnaceItemStacks.get(0));
+
+            if (itemstack.isEmpty())
+            {
+                return false;
             }
-            else if (this.FurnaceContentStack[2].getItem() == stack.getItem()) {
-                this.FurnaceContentStack[2].stackSize += stack.stackSize;
-            }
-            --this.FurnaceContentStack[0].stackSize;
-            if (this.FurnaceContentStack[0].stackSize <= 0) {
-                this.FurnaceContentStack[0] = null;
+            else
+            {
+                ItemStack itemstack1 = (ItemStack)this.derpyfurnaceItemStacks.get(2);
+                if (itemstack1.isEmpty()) return true;
+                if (!itemstack1.isItemEqual(itemstack)) return false;
+                int result = itemstack1.getCount() + itemstack.getCount();
+                return result <= getInventoryStackLimit() && result <= itemstack1.getMaxStackSize(); // Forge fix: make furnace respect stack sizes in furnace recipes
             }
         }
     }
 
-    public static int getItemBurnTime(ItemStack stack) {
-        if (stack == null) {
+    /**
+     * Turn one item from the furnace source stack into the appropriate smelted item in the furnace result stack
+     */
+    public void smeltItem()
+    {
+        if (this.canSmelt())
+        {
+            ItemStack itemstack = (ItemStack)this.derpyfurnaceItemStacks.get(0);
+            ItemStack itemstack1 = FurnaceRecipes.instance().getSmeltingResult(itemstack);
+            ItemStack itemstack2 = (ItemStack)this.derpyfurnaceItemStacks.get(2);
+
+            if (itemstack2.isEmpty())
+            {
+                this.derpyfurnaceItemStacks.set(2, itemstack1.copy());
+            }
+            else if (itemstack2.getItem() == itemstack1.getItem())
+            {
+                itemstack2.grow(itemstack1.getCount());
+            }
+
+            if (itemstack.getItem() == Item.getItemFromBlock(Blocks.SPONGE) && itemstack.getMetadata() == 1 && !((ItemStack)this.derpyfurnaceItemStacks.get(1)).isEmpty() && ((ItemStack)this.derpyfurnaceItemStacks.get(1)).getItem() == Items.BUCKET)
+            {
+                this.derpyfurnaceItemStacks.set(1, new ItemStack(Items.WATER_BUCKET));
+            }
+
+            itemstack.shrink(1);
+        }
+    }
+
+    /**
+     * Returns the number of ticks that the supplied fuel item will keep the furnace burning, or 0 if the item isn't
+     * fuel
+     */
+    public static int getItemBurnTime(ItemStack stack)
+    {
+        if (stack.isEmpty())
+        {
             return 0;
         }
-        else {
+        else
+        {
             Item item = stack.getItem();
-            if (item instanceof ItemBlock && Block.getBlockFromItem(item) != Blocks.air) {
+
+            if (item instanceof net.minecraft.item.ItemBlock && Block.getBlockFromItem(item) != Blocks.AIR)
+            {
                 Block block = Block.getBlockFromItem(item);
 
-                if (block == Blocks.wooden_slab) {
+                if (block == Blocks.WOODEN_SLAB)
+                {
                     return 150;
                 }
-                if (block.getMaterial() == Material.wood) {
+
+                if (block.getDefaultState().getMaterial() == Material.WOOD)
+                {
                     return 300;
                 }
-                if (block == Blocks.coal_block) {
+
+                if (block == Blocks.COAL_BLOCK)
+                {
                     return 16000;
                 }
             }
-            if (item instanceof ItemTool && ((ItemTool)item).getToolMaterialName().equals("WOOD")) {return 200;}
-            if (item instanceof ItemSword && ((ItemSword)item).getToolMaterialName().equals("WOOD")){return 200;}
-            if (item instanceof ItemHoe && ((ItemHoe)item).getToolMaterialName().equals("WOOD")){return 200;}
-            if (item == Items.stick){return 100;}
-            if (item == Items.coal){return 1600;}
-            if (item == Items.lava_bucket){return 20000;}
-            if (item == Item.getItemFromBlock(Blocks.sapling)){return 100;}
-            if (item == Items.blaze_rod){ return 2400;}
-            return GameRegistry.getFuelValue(stack);
+
+            if (item instanceof ItemTool && "WOOD".equals(((ItemTool)item).getToolMaterialName())) return 200;
+            if (item instanceof ItemSword && "WOOD".equals(((ItemSword)item).getToolMaterialName())) return 200;
+            if (item instanceof ItemHoe && "WOOD".equals(((ItemHoe)item).getMaterialName())) return 200;
+            if (item == Items.STICK) return 100;
+            if (item == Items.COAL) return 1600;
+            if (item == Items.LAVA_BUCKET) return 20000;
+            if (item == Item.getItemFromBlock(Blocks.SAPLING)) return 100;
+            if (item == Items.BLAZE_ROD) return 2400;
+            return net.minecraftforge.fml.common.registry.GameRegistry.getFuelValue(stack);
         }
     }
-}//END CLASS
+
+    public static boolean isItemFuel(ItemStack stack)
+    {
+        return getItemBurnTime(stack) > 0;
+    }
+
+    /**
+     * Don't rename this method to canInteractWith due to conflicts with Container
+     */
+    public boolean isUsableByPlayer(EntityPlayer player)
+    {
+    	return this.world.getTileEntity(this.pos) != this ? false
+				: player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D,
+						(double) this.pos.getZ() + 0.5D) <= 64.0D;
+    }
+    
+//    return this.world.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
+//}
+
+    public void openInventory(EntityPlayer player)
+    {
+    }
+
+    public void closeInventory(EntityPlayer player)
+    {
+    }
+
+    /**
+     * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot. For
+     * guis use Slot.isItemValid
+     */
+    public boolean isItemValidForSlot(int index, ItemStack stack)
+    {
+        if (index == 2)
+        {
+            return false;
+        }
+        else if (index != 1)
+        {
+            return true;
+        }
+        else
+        {
+            ItemStack itemstack = (ItemStack)this.derpyfurnaceItemStacks.get(1);
+            return isItemFuel(stack) || SlotFurnaceFuel.isBucket(stack) && itemstack.getItem() != Items.BUCKET;
+        }
+    }
+
+    public int[] getSlotsForFace(EnumFacing side)
+    {
+        return side == EnumFacing.DOWN ? SLOTS_BOTTOM : (side == EnumFacing.UP ? SLOTS_TOP : SLOTS_SIDES);
+    }
+
+    /**
+     * Returns true if automation can insert the given item in the given slot from the given side.
+     */
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    {
+        return this.isItemValidForSlot(index, itemStackIn);
+    }
+
+    /**
+     * Returns true if automation can extract the given item in the given slot from the given side.
+     */
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    {
+        if (direction == EnumFacing.DOWN && index == 1)
+        {
+            Item item = stack.getItem();
+
+            if (item != Items.WATER_BUCKET && item != Items.BUCKET)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public String getGuiID()
+    {
+        return "fdm:derpyfurnace";
+    }
+
+    public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+    {
+        return new ContainerFurnace(playerInventory, this);
+    }
+
+    public int getField(int id)
+    {
+        switch (id)
+        {
+            case 0:
+                return this.derpyfurnaceBurnTime;
+            case 1:
+                return this.currentItemBurnTime;
+            case 2:
+                return this.cookTime;
+            case 3:
+                return this.totalCookTime;
+            default:
+                return 0;
+        }
+    }
+
+    public void setField(int id, int value)
+    {
+        switch (id)
+        {
+            case 0:
+                this.derpyfurnaceBurnTime = value;
+                break;
+            case 1:
+                this.currentItemBurnTime = value;
+                break;
+            case 2:
+                this.cookTime = value;
+                break;
+            case 3:
+                this.totalCookTime = value;
+        }
+    }
+
+    public int getFieldCount()
+    {
+        return 4;
+    }
+
+    public void clear()
+    {
+        this.derpyfurnaceItemStacks.clear();
+    }
+
+    net.minecraftforge.items.IItemHandler handlerTop = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.UP);
+    net.minecraftforge.items.IItemHandler handlerBottom = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.DOWN);
+    net.minecraftforge.items.IItemHandler handlerSide = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.WEST);
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @javax.annotation.Nullable net.minecraft.util.EnumFacing facing)
+    {
+        if (facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            if (facing == EnumFacing.DOWN)
+                return (T) handlerBottom;
+            else if (facing == EnumFacing.UP)
+                return (T) handlerTop;
+            else
+                return (T) handlerSide;
+        return super.getCapability(capability, facing);
+    }
+    
+    @Override
+	public void markDirty() {
+
+	}
+    public ITextComponent getDisplayName() {
+    return new TextComponentString("Derpy Furnace");
+    };
+    
+}

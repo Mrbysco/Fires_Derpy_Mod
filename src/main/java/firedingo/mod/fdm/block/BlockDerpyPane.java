@@ -2,6 +2,7 @@ package firedingo.mod.fdm.block;
 
 import firedingo.mod.fdm.creativetab.CreativeTabFDM;
 import firedingo.mod.fdm.reference.Reference;
+import firedingo.mod.fdm.reference.RegistryReference;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockPane;
 
@@ -10,9 +11,10 @@ import net.minecraft.block.BlockPane;
  */
 public class BlockDerpyPane extends BlockPane {
     public BlockDerpyPane() {
-        super("", "", Material.glass, true);
-        this.setBlockName(Reference.MOD_ID + ":" + "DerpyPane");
-        this.setBlockTextureName("fdm:derpypane");
+        super(Material.GLASS, true);
+        setUnlocalizedName(RegistryReference.ModBlocks.DERPYPANE.getUnlocalisedName());
+        setRegistryName(RegistryReference.ModBlocks.DERPYPANE.getRegistryName());
+        this.setDefaultState(this.blockState.getBaseState().withProperty(NORTH, Boolean.valueOf(false)).withProperty(EAST, Boolean.valueOf(false)).withProperty(SOUTH, Boolean.valueOf(false)).withProperty(WEST, Boolean.valueOf(false)));
         this.setCreativeTab(CreativeTabFDM.FDM_TAB);
        // this.setCreativeTab(CreativeTabs.tabAllSearch);
 

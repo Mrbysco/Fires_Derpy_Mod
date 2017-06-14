@@ -1,6 +1,6 @@
 package firedingo.mod.fdm.item;
 
-import firedingo.mod.fdm.reference.Reference;
+import firedingo.mod.fdm.reference.RegistryReference;
 
 /**
  * Created by firedingo on 30/05/15.
@@ -8,7 +8,7 @@ import firedingo.mod.fdm.reference.Reference;
 public class ItemUnchargedCrystal extends ItemFDM {
     public ItemUnchargedCrystal() {
         super();
-        this.setTextureName("fdm:ItemUnchargedCrystal");
-        this.setUnlocalizedName(Reference.MOD_ID + ":" + "ItemUnchargedCrystal");
+        setUnlocalizedName(RegistryReference.ModItems.UNCHARGEDCRYSTAL.getUnlocalisedName());
+        setRegistryName(RegistryReference.ModItems.UNCHARGEDCRYSTAL.getRegistryName());
     }
 }

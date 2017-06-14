@@ -1,20 +1,20 @@
 package firedingo.mod.fdm;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import firedingo.mod.fdm.block.ModBlocks;
 import firedingo.mod.fdm.gui.GuiHandler;
 import firedingo.mod.fdm.item.ModItems;
 import firedingo.mod.fdm.proxy.CommonProxy;
 import firedingo.mod.fdm.recipe.Recipes;
 import firedingo.mod.fdm.reference.Reference;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 
-@Mod(modid = Reference.MOD_ID, name= Reference.MOD_NAME, version = Reference.MOD_VERSION)
+@Mod(modid = Reference.MOD_ID, name= Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = Reference.ACCEPTED_VERSIONS)
 public class FiresDerpyMod {
 
     @Mod.Instance()
@@ -27,11 +27,14 @@ public class FiresDerpyMod {
     public void PreInit(FMLPreInitializationEvent event) {
         //Calls the method that registers The Mod Items and Blocks
         ModItems.ItemsInit();
+        ModItems.ItemsRegister();
         ModBlocks.BlocksInit();
+        ModBlocks.BlocksRegister();
 
         //registering custom achievements + custom page
         proxy.registerAchievements();
         proxy.registerAchievementPage();
+        proxy.registerRenders();
     }
 
     @Mod.EventHandler
@@ -41,7 +44,9 @@ public class FiresDerpyMod {
         //Calls Method For Registering Tile Entities
         //call tile entity method here
         proxy.initTileEntities();
-        proxy.initWorldGen();
+        
+        //Need redoing
+        //proxy.initWorldGen();
 
         //Registers GuiHandler Here
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());

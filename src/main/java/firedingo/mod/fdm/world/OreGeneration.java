@@ -1,14 +1,15 @@
 package firedingo.mod.fdm.world;
 
-import cpw.mods.fml.common.IWorldGenerator;
+import java.util.Random;
+
 import firedingo.mod.fdm.block.ModBlocks;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenerator;
-
-import java.util.Random;
+import net.minecraftforge.fml.common.IWorldGenerator;
 
 /**
  * Created by Firedingo on 25/02/2016.
@@ -19,25 +20,26 @@ public class OreGeneration implements IWorldGenerator {
     private WorldGenerator oreGenerator1; //Generates The Derpy Ores
 
     public OreGeneration () {
-        this.oreGenerator = new WorldGenMinable(ModBlocks.DerpyOre, 6, Blocks.air);
-        this.oreGenerator1 = new WorldGenMinable(ModBlocks.DerpyOre2, 6, Blocks.air);
+        //this.oreGenerator = new WorldGenMinable(ModBlocks.DerpyOre, 6, Blocks.AIR);
+        //this.oreGenerator1 = new WorldGenMinable(ModBlocks.DerpyOre2, 6, Blocks.AIR);
     }
 
-    @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
-        switch (world.provider.dimensionId) {
-            case 0: //overworld
-                this.generatorRandomizer(this.oreGenerator, world, random, chunkX, chunkZ, 15, 64, 120);
-                this.generatorRandomizer(this.oreGenerator1, world, random, chunkX, chunkZ, 15, 64, 120);
-                break;
-            case 1: //End
+	@Override
+	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
+			IChunkProvider chunkProvider) {
+        switch (world.provider.getDimension()) {
+        case 0: //overworld
+            this.generatorRandomizer(this.oreGenerator, world, random, chunkX, chunkZ, 15, 64, 120);
+            this.generatorRandomizer(this.oreGenerator1, world, random, chunkX, chunkZ, 15, 64, 120);
+            break;
+        case 1: //End
 
-                break;
-            case -1: //Nether
+            break;
+        case -1: //Nether
 
-                break;
-        }
+            break;
     }
+	}
 
     private void generatorRandomizer(WorldGenerator generator, World world, Random rand, int chunk_x, int chunk_z, int chanceToSpawn, int minHeight, int maxHeight) {
         if (minHeight >= 64 && maxHeight < 256 && minHeight < maxHeight) {
@@ -46,7 +48,7 @@ public class OreGeneration implements IWorldGenerator {
                 int x = chunk_x * 16 + rand.nextInt(16);
                 int y = minHeight + rand.nextInt(heightDiff);
                 int z = chunk_z * 16 + rand.nextInt(16);
-                generator.generate(world, rand, x, y, z);
+                //generator.generate(world, rand, x, y, z);
             }
         }
     }

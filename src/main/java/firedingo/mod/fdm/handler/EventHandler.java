@@ -1,8 +1,8 @@
 package firedingo.mod.fdm.handler;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Created by Firedingo on 15/05/2017.
@@ -13,12 +13,12 @@ public class EventHandler {
     @SubscribeEvent
     public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
         //Will set any entity that isn't a player that can jump on fire for 10 secs
-        if (!(event.entity instanceof EntityPlayer)) {
-            event.entity.setFire(10);
+        if (!(event.getEntity() instanceof EntityPlayer)) {
+            event.getEntity().setFire(10);
         }
         //Will give only the player 1 level of experience every time they jump
-        if (event.entity instanceof EntityPlayer) {
-            ((EntityPlayer) event.entity).addExperienceLevel(1);
+        if (event.getEntity() instanceof EntityPlayer) {
+            ((EntityPlayer) event.getEntity()).addExperienceLevel(1);
         }
     }
 }
