@@ -18,3 +18,9 @@ tile.fdm:BlockNotchApple.name= Notch Apple Block
 
 #Creative Tabs
 itemGroup.fdm= Fire's Derpy Mod
+
+#Achievements
+achievement.getPurpleFlower=Collect A Purple Flower
+achievement.getPurpleFlower.desc=The Start of something great or the decent into madness?
+achievement.getPurpleDye=Acquire Purple Dye
+achievement.getPurpleDye.desc=Now I can colour all the things
